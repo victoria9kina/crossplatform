@@ -4,20 +4,16 @@
 #include <fstream>
 
 using namespace std;
-
-// Structure to describe a pipe
 struct Pipe {
-    string name; // Name of the pipe (kilometer mark)
-    double length; // Length of the pipe
-    double diameter; // Diameter of the pipe
-    bool inRepair; // Is the pipe under repair?
+    string name; 
+    double length; 
+    double diameter; 
+    bool inRepair; 
 
-    // Function to input pipe data
     void input() {
         cout << "Enter the pipe name: ";
         cin >> name;
 
-        // Input length with basic validation
         cout << "Enter the pipe length (in km): ";
         cin >> length;
         while (length <= 0) {
@@ -25,7 +21,6 @@ struct Pipe {
             cin >> length;
         }
 
-        // Input diameter with basic validation
         cout << "Enter the pipe diameter (in meters): ";
         cin >> diameter;
         while (diameter <= 0) {
@@ -33,11 +28,9 @@ struct Pipe {
             cin >> diameter;
         }
 
-        // The pipe is not under repair by default
         inRepair = false;
     }
 
-    // Function to display pipe information
     void display() {
         cout << "Pipe: " << name << ", Length: " << length << " km, Diameter: " << diameter << " m, ";
         if (inRepair) {
@@ -48,9 +41,8 @@ struct Pipe {
         }
     }
 
-    // Function to change the pipe's repair status
     void toggleRepair() {
-        inRepair = !inRepair; // Change the repair status
+        inRepair = !inRepair; 
         if (inRepair) {
             cout << "Pipe " << name << " is now under repair.\n";
         }
@@ -60,19 +52,16 @@ struct Pipe {
     }
 };
 
-// Structure to describe a compressor station (CS)
 struct Station {
-    string name; // Station name
-    int totalShops; // Total number of shops
-    int workingShops; // Number of shops currently working
-    double efficiency; // Efficiency of the station
+    string name; 
+    int totalShops; 
+    int workingShops; 
+    double efficiency;
 
-    // Function to input station data
     void input() {
         cout << "Enter the station name: ";
         cin >> name;
 
-        // Input total shops with validation
         cout << "Enter the total number of shops: ";
         cin >> totalShops;
         while (totalShops <= 0) {
@@ -80,7 +69,6 @@ struct Station {
             cin >> totalShops;
         }
 
-        // Input working shops with validation
         cout << "Enter the number of working shops: ";
         cin >> workingShops;
         while (workingShops < 0 || workingShops > totalShops) {
@@ -88,7 +76,6 @@ struct Station {
             cin >> workingShops;
         }
 
-        // Input efficiency with validation
         cout << "Enter the station efficiency: ";
         cin >> efficiency;
         while (efficiency <= 0) {
@@ -97,16 +84,14 @@ struct Station {
         }
     }
 
-    // Function to display station information
     void display() {
         cout << "Station: " << name << ", Total Shops: " << totalShops
             << ", Working Shops: " << workingShops << ", Efficiency: " << efficiency << "\n";
     }
 
-    // Function to toggle the number of working shops
     void toggleShop() {
         if (workingShops < totalShops) {
-            workingShops++; // Increase number of working shops
+            workingShops++; 
             cout << "One more shop is now working. Total working shops: " << workingShops << "\n";
         }
         else {
@@ -115,7 +100,6 @@ struct Station {
     }
 };
 
-// Save data to a file
 void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) {
     ofstream file("lab1_data.txt");
     if (!file) {
@@ -123,13 +107,11 @@ void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) {
         return;
     }
 
-    // Save pipes
     file << pipes.size() << endl;
     for (const auto& pipe : pipes) {
         file << pipe.name << " " << pipe.length << " " << pipe.diameter << " " << pipe.inRepair << endl;
     }
 
-    // Save stations
     file << stations.size() << endl;
     for (const auto& station : stations) {
         file << station.name << " " << station.totalShops << " " << station.workingShops << " " << station.efficiency << endl;
@@ -138,7 +120,6 @@ void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) {
     cout << "Data saved successfully!\n";
 }
 
-// Load data from a file
 void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) {
     ifstream file("lab1_data.txt");
     if (!file) {
@@ -146,7 +127,6 @@ void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) {
         return;
     }
 
-    // Load pipes
     int pipeCount;
     file >> pipeCount;
     pipes.clear();
@@ -156,7 +136,6 @@ void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) {
         pipes.push_back(pipe);
     }
 
-    // Load stations
     int stationCount;
     file >> stationCount;
     stations.clear();
@@ -170,11 +149,10 @@ void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) {
 }
 
 int main() {
-    vector<Pipe> pipes; // List of pipes
-    vector<Station> stations; // List of stations
+    vector<Pipe> pipes; 
+    vector<Station> stations; 
 
     while (true) {
-        // Menu for user to interact with
         cout << "\nMenu:\n";
         cout << "1. Add pipe\n";
         cout << "2. Add station\n";
@@ -189,7 +167,6 @@ int main() {
         int choice;
         cin >> choice;
 
-        // Menu actions based on user's input
         switch (choice) {
         case 1: {
             Pipe pipe;

@@ -5,12 +5,12 @@
 
 using namespace std;
 struct Pipe {
-    string name; 
-    double length; 
-    double diameter; 
-    bool inRepair; 
+    string name; // название трубы
+    double length; // длина трубы
+    double diameter; // ее диаметр 
+    bool inRepair; // находится ли она в ремонте
 
-    void input() {
+    void input() { // функция ввода данных 
         cout << "Enter the pipe name: ";
         cin >> name;
 
@@ -31,7 +31,7 @@ struct Pipe {
         inRepair = false;
     }
 
-    void display() {
+    void display() { // функция вывода данных на экран 
         cout << "Pipe: " << name << ", Length: " << length << " km, Diameter: " << diameter << " m, ";
         if (inRepair) {
             cout << "Status: In repair\n";
@@ -41,7 +41,7 @@ struct Pipe {
         }
     }
 
-    void toggleRepair() {
+    void toggleRepair() { // функция ремонта труб 
         inRepair = !inRepair; 
         if (inRepair) {
             cout << "Pipe " << name << " is now under repair.\n";
@@ -53,10 +53,10 @@ struct Pipe {
 };
 
 struct Station {
-    string name; 
-    int totalShops; 
-    int workingShops; 
-    double efficiency;
+    string name; // имя станции 
+    int totalShops; // количество цехов
+    int workingShops; // кол-во рабочих цехов
+    double efficiency; // эффективность (1-100)
 
     void input() {
         cout << "Enter the station name: ";
@@ -84,7 +84,7 @@ struct Station {
         }
     }
 
-    void display() {
+    void display() { 
         cout << "Station: " << name << ", Total Shops: " << totalShops
             << ", Working Shops: " << workingShops << ", Efficiency: " << efficiency << "\n";
     }
@@ -100,7 +100,7 @@ struct Station {
     }
 };
 
-void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) {
+void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) { // функция сохранения данных в файл 
     ofstream file("lab1_data.txt");
     if (!file) {
         cout << "Error opening file for saving.\n";
@@ -120,14 +120,14 @@ void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) {
     cout << "Data saved successfully!\n";
 }
 
-void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) {
+void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) { // функция отбора данных их файла
     ifstream file("lab1_data.txt");
     if (!file) {
         cout << "Error opening file for loading.\n";
         return;
     }
 
-    int pipeCount;
+    int pipeCount; // порядковый номер трубы
     file >> pipeCount;
     pipes.clear();
     for (int i = 0; i < pipeCount; ++i) {
@@ -148,30 +148,30 @@ void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) {
     cout << "Data loaded successfully!\n";
 }
 
-int main() {
+int main() { // основная функция
     vector<Pipe> pipes; 
     vector<Station> stations; 
 
     while (true) {
         cout << "\nMenu:\n";
-        cout << "1. Add pipe\n";
-        cout << "2. Add station\n";
-        cout << "3. View all objects\n";
-        cout << "4. Edit pipe\n";
-        cout << "5. Edit station\n";
-        cout << "6. Save data\n";
-        cout << "7. Load data\n";
-        cout << "0. Exit\n";
+        cout << "1. Add pipe\n"; // добавление трубы
+        cout << "2. Add station\n"; // добавление станции 
+        cout << "3. View all objects\n"; // просмтр введенных объектов
+        cout << "4. Edit pipe\n"; // указать находится ли какая-либо труба на ремонте
+        cout << "5. Edit station\n"; // указать находится ли какая-либо станция на ремонте
+        cout << "6. Save data\n"; // сохранение в файл 
+        cout << "7. Load data\n"; // вывод из файла
+        cout << "0. Exit\n"; // завершение 
         cout << "Select an option: ";
 
         int choice;
         cin >> choice;
 
-        switch (choice) {
+        switch (choice) { //switch(choice) конструкция для работы с несколькими вариантами кода
         case 1: {
-            Pipe pipe;
-            pipe.input();
-            pipes.push_back(pipe);
+            Pipe pipe; // объект pipe типа Pipe
+            pipe.input(); // вызываю метод input() для запроса данных у пользователя о названии.длине и диаметре 
+            pipes.push_back(pipe);// объект добавляется в  список pipes с помощью метода push_back()
             break;
         }
         case 2: {
@@ -182,7 +182,7 @@ int main() {
         }
         case 3: {
             cout << "\nPipes:\n";
-            for (auto& pipe : pipes) {
+            for (auto& pipe : pipes) { // цикл проходится по всем трубам добавленным в список pipes, а затем выводит все эти трубы на экран
                 pipe.display();
             }
             cout << "\nStations:\n";
@@ -195,8 +195,8 @@ int main() {
             cout << "Enter pipe index to edit (starting from 0): ";
             int index;
             cin >> index;
-            if (index >= 0 && index < pipes.size()) {
-                pipes[index].toggleRepair();
+            if (index >= 0 && index < pipes.size()) { //должен быть меньше размера вектора pipes
+                pipes[index].toggleRepair(); // этот метод изменяет статус трубы, если она была в ремонте, она будет отмечена как рабочая и наоборот
             }
             else {
                 cout << "Invalid index!\n";

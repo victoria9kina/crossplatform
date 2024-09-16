@@ -2,156 +2,179 @@
 #include <vector>
 #include <string>
 #include <fstream>
+
 using namespace std;
 
-// Structure for Pipe
+// Structure to describe a pipe
 struct Pipe {
-    string name;         // Kilometer mark (name)
-    double length;       // Length
-    double diameter;     // Diameter
-    bool inRepair;       // Repair flag
+    string name; // Name of the pipe (kilometer mark)
+    double length; // Length of the pipe
+    double diameter; // Diameter of the pipe
+    bool inRepair; // Is the pipe under repair?
 
-    // Input Pipe data
+    // Function to input pipe data
     void input() {
-        cout << "Enter pipe name: ";
+        cout << "Enter the pipe name: ";
         cin >> name;
-        cout << "Enter pipe length: ";
-        while (!(cin >> length) || length <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Please enter a positive value for length: ";
+
+        // Input length with basic validation
+        cout << "Enter the pipe length (in km): ";
+        cin >> length;
+        while (length <= 0) {
+            cout << "Please enter a valid positive length: ";
+            cin >> length;
         }
-        cout << "Enter pipe diameter: ";
-        while (!(cin >> diameter) || diameter <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Please enter a positive value for diameter: ";
+
+        // Input diameter with basic validation
+        cout << "Enter the pipe diameter (in meters): ";
+        cin >> diameter;
+        while (diameter <= 0) {
+            cout << "Please enter a valid positive diameter: ";
+            cin >> diameter;
         }
-        inRepair = false; // By default, the pipe is not in repair
+
+        // The pipe is not under repair by default
+        inRepair = false;
     }
 
-    // Display Pipe data
-    void display() const {
-        cout << "Pipe " << name << " (Length: " << length << " km, Diameter: " << diameter << " m, "
-            << (inRepair ? "In Repair" : "Not in Repair") << ")" << endl;
-    }
-
-    // Toggle repair status
-    void toggleRepair() {
-        inRepair = !inRepair;
-        cout << "Pipe " << name << " is now " << (inRepair ? "in repair." : "not in repair.") << endl;
-    }
-};
-
-// Structure for Compressor Station (CS)
-struct Station {
-    string name;           // Name
-    int totalShops;        // Total number of shops
-    int workingShops;      // Number of working shops
-    double efficiency;     // Efficiency
-
-    // Input Station data
-    void input() {
-        cout << "Enter station name: ";
-        cin >> name;
-        cout << "Enter total number of shops: ";
-        while (!(cin >> totalShops) || totalShops <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Please enter a positive integer for total shops: ";
-        }
-        cout << "Enter number of working shops: ";
-        while (!(cin >> workingShops) || workingShops < 0 || workingShops > totalShops) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Please enter a valid number of working shops: ";
-        }
-        cout << "Enter station efficiency: ";
-        while (!(cin >> efficiency) || efficiency <= 0) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid input. Please enter a positive value for efficiency: ";
-        }
-    }
-
-    // Display Station data
-    void display() const {
-        cout << "Station " << name << " (Total Shops: " << totalShops << ", Working Shops: " << workingShops
-            << ", Efficiency: " << efficiency << ")" << endl;
-    }
-
-    // Toggle working shops
-    void toggleShop() {
-        if (workingShops < totalShops) {
-            workingShops++;
-            cout << "One more shop is now working. Total working shops: " << workingShops << "." << endl;
+    // Function to display pipe information
+    void display() {
+        cout << "Pipe: " << name << ", Length: " << length << " km, Diameter: " << diameter << " m, ";
+        if (inRepair) {
+            cout << "Status: In repair\n";
         }
         else {
-            workingShops--;
-            cout << "One shop has stopped. Total working shops: " << workingShops << "." << endl;
+            cout << "Status: Not in repair\n";
+        }
+    }
+
+    // Function to change the pipe's repair status
+    void toggleRepair() {
+        inRepair = !inRepair; // Change the repair status
+        if (inRepair) {
+            cout << "Pipe " << name << " is now under repair.\n";
+        }
+        else {
+            cout << "Pipe " << name << " is no longer under repair.\n";
         }
     }
 };
 
-// Save data to file
-void saveToFile(const vector<Pipe>& pipes, const vector<Station>& stations) {
-    ofstream outFile("data.txt");
-    if (!outFile.is_open()) {
-        cerr << "Error opening file!" << endl;
+// Structure to describe a compressor station (CS)
+struct Station {
+    string name; // Station name
+    int totalShops; // Total number of shops
+    int workingShops; // Number of shops currently working
+    double efficiency; // Efficiency of the station
+
+    // Function to input station data
+    void input() {
+        cout << "Enter the station name: ";
+        cin >> name;
+
+        // Input total shops with validation
+        cout << "Enter the total number of shops: ";
+        cin >> totalShops;
+        while (totalShops <= 0) {
+            cout << "Please enter a valid number of shops: ";
+            cin >> totalShops;
+        }
+
+        // Input working shops with validation
+        cout << "Enter the number of working shops: ";
+        cin >> workingShops;
+        while (workingShops < 0 || workingShops > totalShops) {
+            cout << "Please enter a valid number of working shops: ";
+            cin >> workingShops;
+        }
+
+        // Input efficiency with validation
+        cout << "Enter the station efficiency: ";
+        cin >> efficiency;
+        while (efficiency <= 0) {
+            cout << "Please enter a valid efficiency: ";
+            cin >> efficiency;
+        }
+    }
+
+    // Function to display station information
+    void display() {
+        cout << "Station: " << name << ", Total Shops: " << totalShops
+            << ", Working Shops: " << workingShops << ", Efficiency: " << efficiency << "\n";
+    }
+
+    // Function to toggle the number of working shops
+    void toggleShop() {
+        if (workingShops < totalShops) {
+            workingShops++; // Increase number of working shops
+            cout << "One more shop is now working. Total working shops: " << workingShops << "\n";
+        }
+        else {
+            cout << "All shops are already working.\n";
+        }
+    }
+};
+
+// Save data to a file
+void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) {
+    ofstream file("lab1_data.txt");
+    if (!file) {
+        cout << "Error opening file for saving.\n";
         return;
     }
 
     // Save pipes
-    outFile << pipes.size() << endl;
+    file << pipes.size() << endl;
     for (const auto& pipe : pipes) {
-        outFile << pipe.name << ' ' << pipe.length << ' ' << pipe.diameter << ' ' << pipe.inRepair << endl;
+        file << pipe.name << " " << pipe.length << " " << pipe.diameter << " " << pipe.inRepair << endl;
     }
 
     // Save stations
-    outFile << stations.size() << endl;
+    file << stations.size() << endl;
     for (const auto& station : stations) {
-        outFile << station.name << ' ' << station.totalShops << ' ' << station.workingShops << ' ' << station.efficiency << endl;
+        file << station.name << " " << station.totalShops << " " << station.workingShops << " " << station.efficiency << endl;
     }
 
-    cout << "Data saved successfully." << endl;
+    cout << "Data saved successfully!\n";
 }
 
-// Load data from file
+// Load data from a file
 void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) {
-    ifstream inFile("data.txt");
-    if (!inFile.is_open()) {
-        cerr << "Error opening file!" << endl;
+    ifstream file("lab1_data.txt");
+    if (!file) {
+        cout << "Error opening file for loading.\n";
         return;
     }
 
     // Load pipes
-    size_t pipeCount;
-    inFile >> pipeCount;
+    int pipeCount;
+    file >> pipeCount;
     pipes.clear();
-    for (size_t i = 0; i < pipeCount; ++i) {
+    for (int i = 0; i < pipeCount; ++i) {
         Pipe pipe;
-        inFile >> pipe.name >> pipe.length >> pipe.diameter >> pipe.inRepair;
+        file >> pipe.name >> pipe.length >> pipe.diameter >> pipe.inRepair;
         pipes.push_back(pipe);
     }
 
     // Load stations
-    size_t stationCount;
-    inFile >> stationCount;
+    int stationCount;
+    file >> stationCount;
     stations.clear();
-    for (size_t i = 0; i < stationCount; ++i) {
+    for (int i = 0; i < stationCount; ++i) {
         Station station;
-        inFile >> station.name >> station.totalShops >> station.workingShops >> station.efficiency;
+        file >> station.name >> station.totalShops >> station.workingShops >> station.efficiency;
         stations.push_back(station);
     }
 
-    cout << "Data loaded successfully." << endl;
+    cout << "Data loaded successfully!\n";
 }
 
 int main() {
-    vector<Pipe> pipes;
-    vector<Station> stations;
+    vector<Pipe> pipes; // List of pipes
+    vector<Station> stations; // List of stations
 
     while (true) {
+        // Menu for user to interact with
         cout << "\nMenu:\n";
         cout << "1. Add pipe\n";
         cout << "2. Add station\n";
@@ -161,11 +184,12 @@ int main() {
         cout << "6. Save data\n";
         cout << "7. Load data\n";
         cout << "0. Exit\n";
-        cout << "Choose an action: ";
+        cout << "Select an option: ";
 
         int choice;
         cin >> choice;
 
+        // Menu actions based on user's input
         switch (choice) {
         case 1: {
             Pipe pipe;
@@ -181,36 +205,36 @@ int main() {
         }
         case 3: {
             cout << "\nPipes:\n";
-            for (const auto& pipe : pipes) {
+            for (auto& pipe : pipes) {
                 pipe.display();
             }
             cout << "\nStations:\n";
-            for (const auto& station : stations) {
+            for (auto& station : stations) {
                 station.display();
             }
             break;
         }
         case 4: {
-            cout << "Select pipe index to edit: ";
+            cout << "Enter pipe index to edit (starting from 0): ";
             int index;
             cin >> index;
             if (index >= 0 && index < pipes.size()) {
                 pipes[index].toggleRepair();
             }
             else {
-                cout << "Invalid index!" << endl;
+                cout << "Invalid index!\n";
             }
             break;
         }
         case 5: {
-            cout << "Select station index to edit: ";
+            cout << "Enter station index to edit (starting from 0): ";
             int index;
             cin >> index;
             if (index >= 0 && index < stations.size()) {
                 stations[index].toggleShop();
             }
             else {
-                cout << "Invalid index!" << endl;
+                cout << "Invalid index!\n";
             }
             break;
         }
@@ -223,7 +247,7 @@ int main() {
         case 0:
             return 0;
         default:
-            cout << "Invalid choice. Try again." << endl;
+            cout << "Invalid choice. Please try again.\n";
         }
     }
 }

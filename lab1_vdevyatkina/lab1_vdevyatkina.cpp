@@ -1,230 +1,215 @@
 ﻿#include <iostream>
-#include <vector>
 #include <string>
 #include <fstream>
 
 using namespace std;
+
 struct Pipe {
-    string name; // название трубы
-    double length; // длина трубы
-    double diameter; // ее диаметр 
-    bool inRepair; // находится ли она в ремонте
-
-    void input() { // функция ввода данных 
-        cout << "Enter the pipe name: ";
-        cin >> name;
-
-        cout << "Enter the pipe length (in km): ";
-        cin >> length;
-        while (length <= 0) {
-            cout << "Please enter a valid positive length: ";
-            cin >> length;
-        }
-
-        cout << "Enter the pipe diameter (in meters): ";
-        cin >> diameter;
-        while (diameter <= 0) {
-            cout << "Please enter a valid positive diameter: ";
-            cin >> diameter;
-        }
-
-        inRepair = false;
-    }
-
-    void display() { // функция вывода данных на экран 
-        cout << "Pipe: " << name << ", Length: " << length << " km, Diameter: " << diameter << " m, ";
-        if (inRepair) {
-            cout << "Status: In repair\n";
-        }
-        else {
-            cout << "Status: Not in repair\n";
-        }
-    }
-
-    void toggleRepair() { // функция ремонта труб 
-        inRepair = !inRepair; 
-        if (inRepair) {
-            cout << "Pipe " << name << " is now under repair.\n";
-        }
-        else {
-            cout << "Pipe " << name << " is no longer under repair.\n";
-        }
-    }
+    string name = "";
+    double length = 0.0;
+    double diameter = 0.0;
+    bool inRepair = false;
 };
 
-struct Station {
-    string name; // имя станции 
-    int totalShops; // количество цехов
-    int workingShops; // кол-во рабочих цехов
-    double efficiency; // эффективность (1-100)
-
-    void input() {
-        cout << "Enter the station name: ";
-        cin >> name;
-
-        cout << "Enter the total number of shops: ";
-        cin >> totalShops;
-        while (totalShops <= 0) {
-            cout << "Please enter a valid number of shops: ";
-            cin >> totalShops;
-        }
-
-        cout << "Enter the number of working shops: ";
-        cin >> workingShops;
-        while (workingShops < 0 || workingShops > totalShops) {
-            cout << "Please enter a valid number of working shops: ";
-            cin >> workingShops;
-        }
-
-        cout << "Enter the station efficiency: ";
-        cin >> efficiency;
-        while (efficiency <= 0) {
-            cout << "Please enter a valid efficiency: ";
-            cin >> efficiency;
-        }
-    }
-
-    void display() { 
-        cout << "Station: " << name << ", Total Shops: " << totalShops
-            << ", Working Shops: " << workingShops << ", Efficiency: " << efficiency << "\n";
-    }
-
-    void toggleShop() {
-        if (workingShops < totalShops) {
-            workingShops++; 
-            cout << "One more shop is now working. Total working shops: " << workingShops << "\n";
-        }
-        else {
-            cout << "All shops are already working.\n";
-        }
-    }
+struct KS {
+    string name = "";
+    int numShops = 0;
+    int workingShops = 0;
+    double efficiency = 0;
 };
 
-void saveToFile(vector<Pipe>& pipes, vector<Station>& stations) { // функция сохранения данных в файл 
-    ofstream file("lab1_data.txt");
-    if (!file) {
-        cout << "Error opening file for saving.\n";
-        return;
+// функции для работы с файлами
+void savePipeData(const Pipe& pipe, const string& filename) {
+    ofstream file(filename, ios::app); // Открытие файла в режиме добавления
+    if (file.is_open()) {
+        file << "Pipe\n" << pipe.name << " " << pipe.length << " " << pipe.diameter << " " << pipe.inRepair << endl;
+        file.close();
+        cout << "Pipe data saved to file " << filename << endl;
     }
-
-    file << pipes.size() << endl;
-    for (const auto& pipe : pipes) {
-        file << pipe.name << " " << pipe.length << " " << pipe.diameter << " " << pipe.inRepair << endl;
+    else {
+        cout << "Error opening file!" << endl;
     }
-
-    file << stations.size() << endl;
-    for (const auto& station : stations) {
-        file << station.name << " " << station.totalShops << " " << station.workingShops << " " << station.efficiency << endl;
-    }
-
-    cout << "Data saved successfully!\n";
 }
 
-void loadFromFile(vector<Pipe>& pipes, vector<Station>& stations) { // функция отбора данных их файла
-    ifstream file("lab1_data.txt");
-    if (!file) {
-        cout << "Error opening file for loading.\n";
-        return;
+void loadPipeData(Pipe& pipe, const string& filename) {
+    ifstream file(filename);
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            if (line == "Pipe") {
+                getline(file, pipe.name);
+                file >> pipe.length >> pipe.diameter >> pipe.inRepair;
+                file.ignore(); // Очистка остатка строки
+            }
+        }
+        file.close();
+        cout << "Pipe data loaded from file " << filename << endl;
     }
-
-    int pipeCount; // порядковый номер трубы
-    file >> pipeCount;
-    pipes.clear();
-    for (int i = 0; i < pipeCount; ++i) {
-        Pipe pipe;
-        file >> pipe.name >> pipe.length >> pipe.diameter >> pipe.inRepair;
-        pipes.push_back(pipe);
+    else {
+        cout << "Error opening file!" << endl;
     }
-
-    int stationCount;
-    file >> stationCount;
-    stations.clear();
-    for (int i = 0; i < stationCount; ++i) {
-        Station station;
-        file >> station.name >> station.totalShops >> station.workingShops >> station.efficiency;
-        stations.push_back(station);
-    }
-
-    cout << "Data loaded successfully!\n";
 }
 
-int main() { // основная функция
-    vector<Pipe> pipes; 
-    vector<Station> stations; 
+void saveKSData(const KS& ks, const string& filename) {
+    ofstream file(filename, ios::app); // Открытие файла в режиме добавления
+    if (file.is_open()) {
+        file << "KS\n" << ks.name << " " << ks.numShops << " " << ks.workingShops << " " << ks.efficiency << endl;
+        file.close();
+        cout << "KS data saved to file " << filename << endl;
+    }
+    else {
+        cout << "Error opening file!" << endl;
+    }
+}
 
-    while (true) {
-        cout << "\nMenu:\n";
-        cout << "1. Add pipe\n"; // добавление трубы
-        cout << "2. Add station\n"; // добавление станции 
-        cout << "3. View all objects\n"; // просмтр введенных объектов
-        cout << "4. Edit pipe\n"; // указать находится ли какая-либо труба на ремонте
-        cout << "5. Edit station\n"; // указать находится ли какая-либо станция на ремонте
-        cout << "6. Save data\n"; // сохранение в файл 
-        cout << "7. Load data\n"; // вывод из файла
-        cout << "0. Exit\n"; // завершение 
-        cout << "Select an option: ";
+void loadKSData(KS& ks, const string& filename) {
+    ifstream file(filename);
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            if (line == "KS") {
+                getline(file, ks.name);
+                file >> ks.numShops >> ks.workingShops >> ks.efficiency;
+                file.ignore(); // Очистка остатка строки
+            }
+        }
+        file.close();
+        cout << "KS data loaded from file " << filename << endl;
+    }
+    else {
+        cout << "Error opening file!" << endl;
+    }
+}
 
-        int choice;
+// функции для вывода информации
+void displayPipeInfo(const Pipe& pipe) {
+    cout << "Pipe:\n";
+    cout << "Pipe name: " << pipe.name << endl;
+    cout << "Pipe length: " << pipe.length << endl;
+    cout << "Pipe diameter: " << pipe.diameter << endl;
+    cout << "Repair status: " << (pipe.inRepair ? "In repair" : "Not in repair") << endl;
+}
+
+void displayKSInfo(const KS& ks) {
+    cout << "Compressor station:\n";
+    cout << "KS name: " << ks.name << endl;
+    cout << "Total shops: " << ks.numShops << endl;
+    cout << "Working shops: " << ks.workingShops << endl;
+    cout << "Efficiency: " << ks.efficiency << endl;
+}
+
+void addPipe(Pipe& pipe) {
+    cout << "Enter pipe name (with spaces): ";
+    getline(cin, pipe.name);
+    cout << "Enter pipe length: ";
+    cin >> pipe.length;
+    cout << "Enter pipe diameter: ";
+    cin >> pipe.diameter;
+    pipe.inRepair = false;
+}
+
+void addKS(KS& ks) {
+    cout << "Enter KS name (with spaces): ";
+    getline(cin, ks.name);
+    cout << "Enter number of shops: ";
+    cin >> ks.numShops;
+    cout << "Enter number of working shops: ";
+    cin >> ks.workingShops;
+    while (ks.workingShops > ks.numShops || ks.workingShops < 0) {
+        cout << "Number of working shops cannot exceed total or be negative. Try again: ";
+        cin >> ks.workingShops;
+    }
+    cout << "Enter KS efficiency: ";
+    cin >> ks.efficiency;
+}
+
+void editPipe(Pipe& pipe) {
+    pipe.inRepair = !pipe.inRepair;
+    cout << "Repair status changed to: " << (pipe.inRepair ? "In repair" : "Not in repair") << endl;
+}
+void editKS(KS& ks) {
+    cout << "1. Start shop\n2. Stop shop\n";
+    int subChoice;
+    cin >> subChoice;
+    cin.ignore();
+    if (subChoice == 1) {
+        if (ks.workingShops < ks.numShops) {
+            ks.workingShops++;
+            cout << "Shop started. Now working shops: " << ks.workingShops << endl;
+        }
+        else {
+            cout << "All shops are already working." << endl;
+        }
+    }
+    else if (subChoice == 2) {
+        if (ks.workingShops > 0) {
+            ks.workingShops--;
+            cout << "Shop stopped. Now working shops: " << ks.workingShops << endl;
+        }
+        else {
+            cout << "No working shops." << endl;
+        }
+    }
+    else {
+        cout << "Invalid choice!" << endl;
+    }
+}
+
+void showMenu() {
+    cout << "1. Add pipe\n";
+    cout << "2. Add KS\n";
+    cout << "3. View all objects\n";
+    cout << "4. Edit pipe\n";
+    cout << "5. Edit KS\n";
+    cout << "6. Save data\n";
+    cout << "7. Load data\n";
+    cout << "0. Exit\n";
+}
+
+int main() {
+    Pipe pipe;
+    KS ks;
+    string filename = "lab1_file.txt";
+    int choice;
+
+    do {
+        showMenu();
+        cout << "Choose an action: ";
         cin >> choice;
+        cin.ignore();
 
-        switch (choice) { //switch(choice) конструкция для работы с несколькими вариантами кода
-        case 1: {
-            Pipe pipe; // объект pipe типа Pipe
-            pipe.input(); // вызываю метод input() для запроса данных у пользователя о названии.длине и диаметре 
-            pipes.push_back(pipe);// объект добавляется в  список pipes с помощью метода push_back()
+        switch (choice) {
+        case 1:
+            addPipe(pipe);
             break;
-        }
-        case 2: {
-            Station station;
-            station.input();
-            stations.push_back(station);
+        case 2:
+            addKS(ks);
             break;
-        }
-        case 3: {
-            cout << "\nPipes:\n";
-            for (auto& pipe : pipes) { // цикл проходится по всем трубам добавленным в список pipes, а затем выводит все эти трубы на экран
-                pipe.display();
-            }
-            cout << "\nStations:\n";
-            for (auto& station : stations) {
-                station.display();
-            }
+        case 3:
+            displayPipeInfo(pipe);
+            displayKSInfo(ks);
             break;
-        }
-        case 4: {
-            cout << "Enter pipe index to edit (starting from 0): ";
-            int index;
-            cin >> index;
-            if (index >= 0 && index < pipes.size()) { //должен быть меньше размера вектора pipes
-                pipes[index].toggleRepair(); // этот метод изменяет статус трубы, если она была в ремонте, она будет отмечена как рабочая и наоборот
-            }
-            else {
-                cout << "Invalid index!\n";
-            }
+        case 4:
+            editPipe(pipe);
             break;
-        }
-        case 5: {
-            cout << "Enter station index to edit (starting from 0): ";
-            int index;
-            cin >> index;
-            if (index >= 0 && index < stations.size()) {
-                stations[index].toggleShop();
-            }
-            else {
-                cout << "Invalid index!\n";
-            }
+        case 5:
+            editKS(ks);
             break;
-        }
         case 6:
-            saveToFile(pipes, stations);
+            savePipeData(pipe, filename);
+            saveKSData(ks, filename);
             break;
         case 7:
-            loadFromFile(pipes, stations);
+            loadPipeData(pipe, filename);
+            loadKSData(ks, filename);
             break;
         case 0:
-            return 0;
+            cout << "Exiting the program.\n";
+            break;
         default:
-            cout << "Invalid choice. Please try again.\n";
+            cout << "Invalid choice, try again.\n";
         }
-    }
+    } while (choice != 0);
+
+    return 0;
 }

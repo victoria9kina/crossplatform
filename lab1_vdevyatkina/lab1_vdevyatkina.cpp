@@ -243,7 +243,7 @@ void FileOutput(Pipe& pipe_data, Station& station_data)
 		int totalLines = lines.size();
 		if (totalLines > 0)
 		{
-			cout << "\nThe last five lines from the file are:" << endl;
+			cout << "\nThe last information from the file are:" << endl;
 			for (int i = max(0, totalLines - 5); i < totalLines; ++i)
 			{
 				cout << lines[i] << endl;

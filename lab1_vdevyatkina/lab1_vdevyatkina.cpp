@@ -13,7 +13,13 @@ struct Pipe
 	bool pipe_repair = false;
 };
 
-
+struct Station
+{
+	string station_name = "None";
+	int station_workshops = 0;
+	int station_act_workshops = 0;
+	double station_efficiency = 0.0;
+};
 
 int check_int()
 {

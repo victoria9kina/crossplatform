@@ -201,7 +201,7 @@ Station EditStation(Station new_station)
 
 void SavePipeToFile(const Pipe& pipe_data)
 {
-	ofstream fout("info.txt", ios::app);  // Используем режим добавления (app), чтобы данные не перезаписывались
+	ofstream fout("info.txt", ios::app); 
 	if (pipe_data.pipe_name != "None")
 	{
 		fout << "Info about your pipe...\n";
@@ -221,7 +221,7 @@ void SavePipeToFile(const Pipe& pipe_data)
 
 void SaveStationToFile(const Station& station_data)
 {
-	ofstream fout("info.txt", ios::app);  // Используем режим добавления (app), чтобы данные не перезаписывались
+	ofstream fout("info.txt", ios::app);  
 	if (station_data.station_name != "None")
 	{
 		fout << "Info about your station...\n";
@@ -271,7 +271,7 @@ void FileOutput()
 			fin >> pipe_repair;
 			cout << "Repair status of the pipe: " << (pipe_repair ? "In repair" : "Not in repair") << endl;
 
-			fin.ignore(numeric_limits<streamsize>::max(), '\n');  // Пропускаем оставшуюся часть строки
+			fin.ignore(numeric_limits<streamsize>::max(), '\n'); 
 		}
 		else if (line == "Info about your station...")
 		{
@@ -294,7 +294,7 @@ void FileOutput()
 			fin >> station_efficiency;
 			cout << "Station efficiency indicator: " << station_efficiency << endl;
 
-			fin.ignore(numeric_limits<streamsize>::max(), '\n');  // Пропускаем оставшуюся часть строки
+			fin.ignore(numeric_limits<streamsize>::max(), '\n');  
 		}
 	}
 
@@ -304,9 +304,8 @@ void FileOutput()
 
 int main()
 {
-	// Очищаем файл при запуске программы
 	ofstream fout("info.txt", ios::trunc);
-	fout.close();  // Сразу закрываем файл, чтобы он был доступен для других операций
+	fout.close();  
 
 	Pipe pipe0;
 	Station station0;
@@ -330,29 +329,29 @@ int main()
 		switch (num)
 		{
 		case 1:
-			pipe0 = AddPipe();  // Добавляем трубу
+			pipe0 = AddPipe();  
 			break;
 		case 2:
-			station0 = AddStation();  // Добавляем станцию
+			station0 = AddStation();  
 			break;
 		case 3:
-			PrintAddPipe(pipe0);  // Печатаем данные о трубе
-			PrintAddStation(station0);  // Печатаем данные о станции
+			PrintAddPipe(pipe0);  
+			PrintAddStation(station0);  
 			break;
 		case 4:
-			pipe0 = RepairPipe(pipe0);  // Редактируем трубу
+			pipe0 = RepairPipe(pipe0);  
 			break;
 		case 5:
-			station0 = EditStation(station0);  // Редактируем станцию
+			station0 = EditStation(station0);  
 			break;
 		case 6:
-			SavePipeToFile(pipe0);  // Сохраняем данные о трубе
+			SavePipeToFile(pipe0); 
 			break;
 		case 7:
-			SaveStationToFile(station0);  // Сохраняем данные о станции
+			SaveStationToFile(station0);  
 			break;
 		case 8:
-			FileOutput();  // Выводим все данные из файла
+			FileOutput();  
 			break;
 		case 0:
 			return 0;
